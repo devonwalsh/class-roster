@@ -8,7 +8,8 @@ class TeacherDetails extends Component {
         grade: null,
         teacherId: null,
         teacherName: '',
-        students: []
+        students: [],
+        addStudentFormFlag: false,
     }
 
     fetchData = () => {
@@ -33,7 +34,10 @@ class TeacherDetails extends Component {
             }
         })
         .then(res => res.json())
-        .then(data => this.addStudentToState(data))
+        .then(data => 
+            this.addStudentToState(data),
+            this.toggleAddStudentFormFlag()
+        )
         .catch(error => console.log(error))
     }
 
@@ -59,6 +63,10 @@ class TeacherDetails extends Component {
 
     }
 
+    toggleAddStudentFormFlag = () => {
+        this.setState({...this.state, addStudentFormFlag: !this.state.addStudentFormFlag})
+    }
+
     componentDidMount() {
         this.fetchData();
     }
@@ -80,6 +88,8 @@ class TeacherDetails extends Component {
                     teacherId={this.state.teacherId}
                     teacherName={this.state.teacherName}
                     studentList={this.state.students}
+                    addStudentFormFlag={this.state.addStudentFormFlag}
+                    toggleAddStudentFormFlag={this.toggleAddStudentFormFlag}
                     addStudentToDatabase={this.addStudentToDatabase}
                     addStudentToState={this.addStudentToState}
                     deleteStudent={this.deleteStudent}

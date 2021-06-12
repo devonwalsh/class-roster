@@ -5,21 +5,16 @@ import { NavLink } from 'react-router-dom';
 class TeacherList extends Component {
 
     state = {
-        addTeacherFormFlag: false,
         nameInput: '',
         gradeInput: null
-    }
-
-    toggleAddTeacherFormFlag = () => {
-        this.setState({...this.state, addTeacherFormFlag: !this.state.addTeacherFormFlag})
     }
 
     render() {
         return (  
                 <div className="teacher-list">
                 {
-                    this.state.addTeacherFormFlag === false ? 
-                    <Button onClick={() => this.toggleAddTeacherFormFlag()} color="green">Add Teacher</Button> : 
+                    this.props.addTeacherFormFlag === false ? 
+                    <Button onClick={() => this.props.toggleAddTeacherFormFlag()} color="green">Add Teacher</Button> : 
                     <div>
                         <Input 
                         placeholder="Input teacher's name"
@@ -33,7 +28,9 @@ class TeacherList extends Component {
                         />
                         <Button 
                         type="submit"
-                        onClick={() => console.log("bloop")}>
+                        onClick={() => 
+                            this.props.addTeacherToDatabase({"name": this.state.nameInput, "grade": this.state.gradeInput})
+                        }>
                             Submit
                         </Button>
                     </div>
@@ -43,7 +40,7 @@ class TeacherList extends Component {
                             <span className="teacher-name">{item.name} (Grade {item.grade})</span>
                             <span className="teacher-buttons">
                             <Button as={NavLink} exact to={`/teachers/${item.id}`}>View</Button>
-                            <Button>Delete</Button>
+                            <Button onClick={() => this.props.deleteTeacher(item.id)}>Delete</Button>
                             </span>
                         </Segment>
                 )}

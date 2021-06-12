@@ -4,12 +4,7 @@ import { Button, Segment, Input } from 'semantic-ui-react';
 class StudentList extends Component {
 
     state = {
-        addStudentFormFlag: false,
-        nameInput: '',
-    }
-
-    toggleAddStudentFormFlag = () => {
-        this.setState({...this.state, addStudentFormFlag: !this.state.addStudentFormFlag})
+        nameInput: ''
     }
 
     render() {
@@ -18,8 +13,8 @@ class StudentList extends Component {
                 <div className="teacher-details">
                     <h1>{this.props.teacherName} (Grade {this.props.grade})</h1>
                     {
-                        this.state.addStudentFormFlag === false ? 
-                        <Button onClick={() => this.toggleAddStudentFormFlag()} color="green">Add Student</Button> : 
+                        this.props.addStudentFormFlag === false ? 
+                        <Button onClick={() => this.props.toggleAddStudentFormFlag()} color="green">Add Student</Button> : 
                         <div>
                             <Input 
                             placeholder="Input student's name"
