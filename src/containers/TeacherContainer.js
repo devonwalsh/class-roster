@@ -7,7 +7,9 @@ class Teachers extends Component {
     state = {
         teacherList: [],
         addTeacherFormFlag: false,
-        contentFetched: false
+        contentFetched: false,
+        nameInput: '',
+        gradeInput: ''
     }
 
     fetchTeacherList = () => {
@@ -30,15 +32,13 @@ class Teachers extends Component {
             }
         })
         .then(res => res.json())
-        .then(data => 
-            this.addTeacherToState(data),
-            this.toggleAddTeacherFormFlag()
-        )
+        .then(data => this.addTeacherToState(data))
         .catch(error => console.log(error))
     }
 
     addTeacherToState = teacherData => {
-        this.setState({...this.state, teacherList: [...this.state.teacherList, teacherData]})
+        this.setState({...this.state, teacherList: [...this.state.teacherList, teacherData], nameInput: '', gradeInput: ''})
+        this.toggleAddTeacherFormFlag()
     }
 
     deleteTeacher = teacherId => {
@@ -63,6 +63,14 @@ class Teachers extends Component {
         this.setState({...this.state, addTeacherFormFlag: !this.state.addTeacherFormFlag})
     }
 
+    updateTeacherName = value => {
+        this.setState({...this.state, nameInput: value})
+    }
+
+    updateTeacherGrade = value => {
+        this.setState({...this.state, gradeInput: value})
+    }
+
     render() {
         if (!this.state.contentFetched) {
             return (
@@ -79,11 +87,15 @@ class Teachers extends Component {
                 <TeacherList 
                     teacherList={this.state.teacherList}
                     addTeacherFormFlag={this.state.addTeacherFormFlag}
+                    nameInput={this.state.nameInput}
+                    gradeInput={this.state.gradeInput}
                     toggleAddTeacherFormFlag={this.toggleAddTeacherFormFlag}
                     addTeacherToDatabase={this.addTeacherToDatabase}
                     addTeacherToState={this.addTeacherToState}
                     deleteTeacher={this.deleteTeacher}
                     removeTeacherFromState={this.removeTeacherFromState}
+                    updateTeacherName={this.updateTeacherName}
+                    updateTeacherGrade={this.updateTeacherGrade}
                 />
                 </div>
             )

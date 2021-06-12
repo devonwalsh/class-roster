@@ -3,10 +3,6 @@ import { Button, Segment, Input } from 'semantic-ui-react';
 
 class StudentList extends Component {
 
-    state = {
-        nameInput: ''
-    }
-
     render() {
         return ( 
             <div>
@@ -18,12 +14,12 @@ class StudentList extends Component {
                         <div>
                             <Input 
                             placeholder="Input student's name"
-                            value={this.state.nameInput}
-                            onChange={e => this.setState({...this.state, nameInput: e.target.value})}
+                            value={this.props.nameInput}
+                            onChange={e => this.props.updateStudentName(e.target.value)}
                             />
                             <Button 
                             type="submit"
-                            onClick={() => this.props.addStudentToDatabase(this.state.nameInput)}>
+                            onClick={() => this.props.addStudentToDatabase(this.props.nameInput)}>
                                 Submit
                             </Button>
                         </div>
@@ -34,8 +30,6 @@ class StudentList extends Component {
                     <Segment className="student" key={key}>
                         <span className="student-name">{item.name}</span>
                         <span class-name="student-buttons">
-                            <Button>Edit</Button>
-                            <Button>Move</Button>
                             <Button onClick={() => this.props.deleteStudent(item.id)}>Delete</Button>
                         </span>
                     </Segment>)}

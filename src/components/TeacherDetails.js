@@ -10,6 +10,7 @@ class TeacherDetails extends Component {
         teacherName: '',
         students: [],
         addStudentFormFlag: false,
+        nameInput: ''
     }
 
     fetchData = () => {
@@ -34,15 +35,13 @@ class TeacherDetails extends Component {
             }
         })
         .then(res => res.json())
-        .then(data => 
-            this.addStudentToState(data),
-            this.toggleAddStudentFormFlag()
-        )
+        .then(data => this.addStudentToState(data))
         .catch(error => console.log(error))
     }
 
     addStudentToState = studentData => {
-        this.setState({...this.state, students: [...this.state.students, studentData]})
+        this.setState({...this.state, students: [...this.state.students, studentData], nameInput: ''})
+        this.toggleAddStudentFormFlag()
     }
 
     deleteStudent = studentId => {
@@ -67,6 +66,10 @@ class TeacherDetails extends Component {
         this.setState({...this.state, addStudentFormFlag: !this.state.addStudentFormFlag})
     }
 
+    updateStudentName = value => {
+        this.setState({...this.state, nameInput: value})
+    }
+
     componentDidMount() {
         this.fetchData();
     }
@@ -88,12 +91,14 @@ class TeacherDetails extends Component {
                     teacherId={this.state.teacherId}
                     teacherName={this.state.teacherName}
                     studentList={this.state.students}
+                    nameInput={this.state.nameInput}
                     addStudentFormFlag={this.state.addStudentFormFlag}
                     toggleAddStudentFormFlag={this.toggleAddStudentFormFlag}
                     addStudentToDatabase={this.addStudentToDatabase}
                     addStudentToState={this.addStudentToState}
                     deleteStudent={this.deleteStudent}
                     removeStudentFromState={this.removeStudentFromState}
+                    updateStudentName={this.updateStudentName}
                 />
             )
         }
