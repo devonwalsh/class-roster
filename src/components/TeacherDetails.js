@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Segment, Input } from 'semantic-ui-react';
+import StudentList from '../containers/StudentList';
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 class TeacherDetails extends Component {
 
@@ -7,9 +8,7 @@ class TeacherDetails extends Component {
         grade: null,
         teacherId: null,
         teacherName: '',
-        students: [],
-        addStudentFormFlag: false,
-        nameInput: ''
+        students: []
     }
 
     fetchData = () => {
@@ -23,6 +22,23 @@ class TeacherDetails extends Component {
             students: data.students
         }))
         .catch(error => console.log(error))
+    }
+
+    addStudentToDatabase = studentName => {
+        fetch(`http://localhost:9292/teachers/${this.props.match.params.teacherId}/students`, {
+            method: "POST",
+            body: JSON.stringify({"name": studentName}),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(res => res.json())
+        .then(data => this.addStudentToState(data))
+        .catch(error => console.log(error))
+    }
+
+    addStudentToState = studentData => {
+        this.setState({...this.state, students: [...this.state.students, studentData]})
     }
 
     deleteStudent = studentId => {
@@ -43,68 +59,34 @@ class TeacherDetails extends Component {
 
     }
 
-    toggleAddStudentFormFlag = () => {
-        this.setState({...this.state, addStudentFormFlag: !this.state.addStudentFormFlag})
-    }
-
-    addStudentToDatabase = studentName => {
-        fetch(`http://localhost:9292/teachers/${this.props.match.params.teacherId}/students`, {
-            method: "POST",
-            body: JSON.stringify({"name": studentName}),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
-        })
-        .then(res => res.json())
-        .then(data => this.addStudentToState(data))
-        .catch(error => console.log(error))
-    }
-
-    addStudentToState = studentData => {
-        this.setState({...this.state, students: [...this.state.students, studentData]})
-    }
-
     componentDidMount() {
         this.fetchData();
     }
 
     render() {
-
-        return (  
-            <div>
-                <div className="teacher-details">
-                    <h1>{this.state.teacherName} (Grade {this.state.grade})</h1>
-                    {
-                        this.state.addStudentFormFlag === false ? 
-                        <Button onClick={() => this.toggleAddStudentFormFlag()} color="green">Add Student</Button> : 
-                        <div>
-                            <Input 
-                            placeholder="Input student's name"
-                            value={this.state.searchTerm}
-                            onChange={e => this.setState({...this.state, nameInput: e.target.value})}
-                            />
-                            <Button 
-                            type="submit"
-                            onClick={() => this.addStudentToDatabase(this.state.nameInput)}>
-                                Submit
-                            </Button>
-                        </div>
-                    }
+        if (this.state.teacherId === null) {
+            return (
+                <div className="spinner">
+                   <Dimmer active inverted size="massive">
+                      <Loader inverted>Loading...</Loader>
+                   </Dimmer>
                 </div>
-                <div className="student-list">
-                    {this.state.students.map(item => 
-                    <Segment className="student" studentData={item}>
-                        <span className="student-name">{item.name}</span>
-                        <span class-name="student-buttons">
-                            <Button>Edit</Button>
-                            <Button>Move</Button>
-                            <Button onClick={() => this.deleteStudent(item.id)}>Delete</Button>
-                        </span>
-                    </Segment>)}
-                </div>
-            </div>
-        )
-
+            )
+        }
+        else {
+            return (  
+                <StudentList 
+                    grade={this.state.grade}
+                    teacherId={this.state.teacherId}
+                    teacherName={this.state.teacherName}
+                    studentList={this.state.students}
+                    addStudentToDatabase={this.addStudentToDatabase}
+                    addStudentToState={this.addStudentToState}
+                    deleteStudent={this.deleteStudent}
+                    removeStudentFromState={this.removeStudentFromState}
+                />
+            )
+        }
     }
 }
 
